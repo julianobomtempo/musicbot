@@ -1,52 +1,19 @@
 {
   "intents": [
     {
-      "intent": "topmusics",
-      "examples": [
-        {
-          "text": "Músicas mais tocadas?"
-        },
-        {
-          "text": "Quero ver as músicas mais tocadas?"
-        },
-        {
-          "text": "Quais os melhores musicas"
-        },
-        {
-          "text": "Quais as músicas mais tocadas?"
-        }
-      ],
-      "description": ""
-    },
-    {
       "intent": "buscamusica",
       "examples": [
         {
           "text": "Quero buscar alguns artistas"
         },
         {
-          "text": "Quero procurar artistas"
+          "text": "quero buscar artistas"
         },
         {
           "text": "Quero encontrar artista"
-        }
-      ],
-      "description": ""
-    },
-    {
-      "intent": "saudacao",
-      "examples": [
-        {
-          "text": "Tudo bem"
         },
         {
-          "text": "Olá"
-        },
-        {
-          "text": "Oi"
-        },
-        {
-          "text": "Boa tarde"
+          "text": "Quero procurar artistas"
         }
       ],
       "description": ""
@@ -61,19 +28,89 @@
           "text": "Até logo"
         },
         {
-          "text": "Tchau"
+          "text": "Até mais"
         },
         {
-          "text": "Até mais"
+          "text": "Fui"
+        },
+        {
+          "text": "Tchau"
         },
         {
           "text": "Um abraço"
         }
       ],
       "description": ""
+    },
+    {
+      "intent": "saudacao",
+      "examples": [
+        {
+          "text": "Boa noite"
+        },
+        {
+          "text": "Boa tarde"
+        },
+        {
+          "text": "Bom dia"
+        },
+        {
+          "text": "Oi"
+        },
+        {
+          "text": "Olá"
+        },
+        {
+          "text": "Tudo bem"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "topmusics",
+      "examples": [
+        {
+          "text": "musicas mais pedidas"
+        },
+        {
+          "text": "Músicas mais tocadas?"
+        },
+        {
+          "text": "Quais as músicas mais tocadas?"
+        },
+        {
+          "text": "Quais os melhores musicas"
+        },
+        {
+          "text": "quero as melhores"
+        },
+        {
+          "text": "quero as tops"
+        },
+        {
+          "text": "Quero ver as músicas mais tocadas?"
+        }
+      ],
+      "description": ""
     }
   ],
-  "entities": [],
+  "entities": [
+    {
+      "entity": "sys-date",
+      "values": [],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sys-number",
+      "values": [],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sys-time",
+      "values": [],
+      "fuzzy_match": true
+    }
+  ],
   "metadata": {
     "api_version": {
       "major_version": "v2",
@@ -81,6 +118,52 @@
     }
   },
   "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Bem-vindo",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Olá. Como posso te ajudar?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "welcome",
+      "dialog_node": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Em outros casos",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Eu não entendi. Você pode tentar reformular a frase."
+              },
+              {
+                "text": "Você pode reformular sua afirmação? Eu não estou entendendo."
+              },
+              {
+                "text": "Eu não entendi o sentido."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Em outros casos",
+      "previous_sibling": "node_2_1594689965206",
+      "disambiguation_opt_out": true
+    },
     {
       "type": "event_handler",
       "output": {
@@ -114,7 +197,13 @@
           {
             "values": [
               {
-                "text": "As músicas encontradas foram $resposta"
+                "text": "Oi"
+              },
+              {
+                "text": "Olá"
+              },
+              {
+                "text": "Oi, tudo bem"
               }
             ],
             "response_type": "text",
@@ -122,12 +211,12 @@
           }
         ]
       },
-      "parent": "node_8_1594681785092",
-      "conditions": "true",
-      "dialog_node": "node_3_1594682071373"
+      "conditions": "#saudacao",
+      "dialog_node": "node_10_1594668898251",
+      "previous_sibling": "Bem-vindo"
     },
     {
-      "type": "standard",
+      "type": "frame",
       "output": {
         "generic": [
           {
@@ -137,13 +226,12 @@
           }
         ]
       },
-      "parent": "node_4_1594681765874",
       "actions": [
         {
-          "name": "search",
+          "name": "topmusics",
           "type": "client",
           "parameters": {
-            "termo": "<? input.text ?>"
+            "periodo": "$artista"
           },
           "result_variable": "resposta"
         }
@@ -151,64 +239,10 @@
       "next_step": {
         "behavior": "skip_user_input"
       },
-      "conditions": "true",
-      "dialog_node": "node_8_1594681785092"
-    },
-    {
-      "type": "standard",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "As músicas mais tocadas encontradas foram: $resposta"
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "parent": "node_10_1594677136097",
-      "context": {
-        "tipo": null
-      },
-      "conditions": "true",
-      "dialog_node": "node_3_1594677663630",
-      "previous_sibling": "slot_10_1594677959812"
-    },
-    {
-      "type": "slot",
-      "parent": "node_10_1594677136097",
-      "variable": "$artista",
-      "dialog_node": "slot_10_1594677959812"
-    },
-    {
-      "type": "standard",
-      "title": "Em outros casos",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "Eu não entendi. Você pode tentar reformular a frase."
-              },
-              {
-                "text": "Você pode reformular sua afirmação? Eu não estou entendendo."
-              },
-              {
-                "text": "Eu não entendi o sentido."
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "conditions": "anything_else",
-      "dialog_node": "Em outros casos",
-      "previous_sibling": "node_2_1594689965206",
-      "disambiguation_opt_out": true
+      "conditions": "#topmusics",
+      "digress_in": "does_not_return",
+      "dialog_node": "node_10_1594677136097",
+      "previous_sibling": "node_10_1594668898251"
     },
     {
       "type": "standard",
@@ -245,13 +279,7 @@
           {
             "values": [
               {
-                "text": "Oi"
-              },
-              {
-                "text": "Olá"
-              },
-              {
-                "text": "Oi, tudo bem"
+                "text": "As músicas mais tocadas encontradas foram: $resposta"
               }
             ],
             "response_type": "text",
@@ -259,9 +287,32 @@
           }
         ]
       },
-      "conditions": "#saudacao",
-      "dialog_node": "node_10_1594668898251",
-      "previous_sibling": "Bem-vindo"
+      "parent": "node_10_1594677136097",
+      "context": {
+        "tipo": null
+      },
+      "conditions": "true",
+      "dialog_node": "node_3_1594677663630",
+      "previous_sibling": "slot_10_1594677959812"
+    },
+    {
+      "type": "standard",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "As músicas encontradas foram $resposta"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_8_1594681785092",
+      "conditions": "true",
+      "dialog_node": "node_3_1594682071373"
     },
     {
       "type": "standard",
@@ -283,7 +334,7 @@
       "previous_sibling": "node_10_1594677136097"
     },
     {
-      "type": "frame",
+      "type": "standard",
       "output": {
         "generic": [
           {
@@ -293,12 +344,13 @@
           }
         ]
       },
+      "parent": "node_4_1594681765874",
       "actions": [
         {
-          "name": "topmusics",
+          "name": "search",
           "type": "client",
           "parameters": {
-            "periodo": "$artista"
+            "termo": "<? input.text ?>"
           },
           "result_variable": "resposta"
         }
@@ -306,29 +358,14 @@
       "next_step": {
         "behavior": "skip_user_input"
       },
-      "conditions": "#topmusics",
-      "digress_in": "does_not_return",
-      "dialog_node": "node_10_1594677136097",
-      "previous_sibling": "node_10_1594668898251"
+      "conditions": "true",
+      "dialog_node": "node_8_1594681785092"
     },
     {
-      "type": "standard",
-      "title": "Bem-vindo",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "Olá. Como posso te ajudar?"
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
-      },
-      "conditions": "welcome",
-      "dialog_node": "Bem-vindo"
+      "type": "slot",
+      "parent": "node_10_1594677136097",
+      "variable": "$artista",
+      "dialog_node": "slot_10_1594677959812"
     }
   ],
   "counterexamples": [],
